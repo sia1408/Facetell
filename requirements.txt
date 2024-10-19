@@ -1,3 +1,9 @@
-tensorflow
-opencv-python
-flask
+tensorflow==2.13.0
+opencv-python==4.10.0.0
+Flask==2.3.2
+numpy==1.24.3
+pandas==2.0.3
+scikit-learn==1.2.2
+Pillow==9.4.0  # Optional, useful for handling image formats
+gunicorn==20.1.0  # Optional, for production WSGI server
+requests==2.31.0  # Optional, for sending HTTP requests if needed
