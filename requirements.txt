@@ -1,3 +1,3 @@
-tensorflow==2.x.x
+tensorflow
 opencv-python
 flask
