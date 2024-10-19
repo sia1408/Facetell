@@ -16,7 +16,7 @@ def main():
     model = build_xception_model()
 
     # Define checkpoint callback to save the best model
-    checkpoint = ModelCheckpoint('models/xception_model.keras', monitor='val_loss', save_best_only=True)
+    checkpoint = ModelCheckpoint('models/cnn2_model.keras', monitor='val_loss', save_best_only=True)
 
     # Train the model using the data generators
     history = model.fit(
