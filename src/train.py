@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import ModelCheckpoint, CSVLogger
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.applications import Xception
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout
@@ -61,7 +61,7 @@ class DataGenerator(Sequence):
             return None
 
 # Load metadata and split dataset
-def load_metadata_and_split(csv_file, image_dir):
+def load_metadata_and_split(csv_file, image_dir, test_size=0.2, random_state=42):
     df = pd.read_csv(csv_file)
     image_paths = []
     labels = []
@@ -70,12 +70,12 @@ def load_metadata_and_split(csv_file, image_dir):
         label = 1 if row['label'] == 'FAKE' else 0
         image_paths.append(image_path)
         labels.append(label)
-    X_train, X_val, y_train, y_val = train_test_split(image_paths, labels, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(image_paths, labels, test_size=test_size, random_state=random_state)
     return X_train, X_val, y_train, y_val
 
 # Xception model definition
-def build_xception_model():
-    base_model = Xception(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+def build_xception_model(input_shape=(224, 224, 3)):
+    base_model = Xception(weights='imagenet', include_top=False, input_shape=input_shape)
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     x = Dense(128, activation='relu')(x)
@@ -89,30 +89,50 @@ def build_xception_model():
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     return model
 
-# Main function
-def main():
-    csv_file = 'data/metadata.csv'
-    image_dir = 'data/faces_224/'
+# Main training function
+def train_model(config):
+    csv_file = config['data']['csv_file']
+    image_dir = config['data']['image_dir']
     
-    X_train, X_val, y_train, y_val = load_metadata_and_split(csv_file, image_dir)
+    X_train, X_val, y_train, y_val = load_metadata_and_split(
+        csv_file, 
+        image_dir, 
+        test_size=config['train']['test_size'], 
+        random_state=config['train']['random_state']
+    )
 
-    train_generator = DataGenerator(X_train, y_train, batch_size=4, target_size=(224, 224))
-    val_generator = DataGenerator(X_val, y_val, batch_size=4, target_size=(224, 224))
+    train_generator = DataGenerator(
+        X_train, 
+        y_train, 
+        batch_size=config['model']['batch_size'], 
+        target_size=tuple(config['model']['input_shape'][:2])
+    )
+    val_generator = DataGenerator(
+        X_val, 
+        y_val, 
+        batch_size=config['model']['batch_size'], 
+        target_size=tuple(config['model']['input_shape'][:2])
+    )
 
-    model = build_xception_model()
+    model = build_xception_model(input_shape=tuple(config['model']['input_shape']))
 
-    checkpoint = ModelCheckpoint('models/xception_model.keras', monitor='val_loss', save_best_only=True)
+    checkpoint = ModelCheckpoint(
+        config['save']['model_path'], 
+        monitor='val_loss', 
+        save_best_only=True
+    )
+    csv_logger = CSVLogger(config['save']['log_path'])
 
     history = model.fit(
         train_generator,
         validation_data=val_generator,
-        epochs=10,
-        callbacks=[checkpoint]
+        epochs=config['model']['epochs'],
+        callbacks=[checkpoint, csv_logger]
     )
 
     print("Model training completed!")
-    with open('logs/training_log.txt', 'w') as f:
-        f.write(str(history.history))
+    return history
 
 if __name__ == "__main__":
-    main()
+    # This block is now optional since we're using main.py to run the script
+    pass
