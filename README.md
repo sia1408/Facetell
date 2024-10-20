@@ -33,8 +33,8 @@ This project implements a deep learning model for detecting deepfake images usin
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/deepfake-detection.git
-   cd deepfake-detection
+   git clone https://github.com/sia1408/Facetell.git
+   cd Facetell
    ```
 
 2. Create a virtual environment (optional but recommended):
