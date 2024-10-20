@@ -1,9 +1,10 @@
 tensorflow
 opencv-python
-Flask
 numpy
 pandas
 scikit-learn
-Pillow
+pyyaml
+flask
+pillow
 gunicorn
 requests
