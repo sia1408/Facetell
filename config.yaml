@@ -8,6 +8,9 @@ model:
   input_shape: [224, 224, 3]
   batch_size: 4
   epochs: 10
+  dense_units: 128
+  dropout_rate: 0.5
+  learning_rate: 0.0001
 
 # Training parameters
 train:
@@ -17,7 +20,7 @@ train:
 # Paths for saving
 save:
   model_path: 'models/xception_model.keras'
-  log_path: 'logs/training_log.txt'
+  log_path: 'logs/training_log.csv'
 
 # Evaluation parameters
 evaluate:
