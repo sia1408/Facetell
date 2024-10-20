@@ -1,6 +1,6 @@
 # Facetell
 
-##Structure
+#Structure
 ```Facetell/
 │
 ├── data/
