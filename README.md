@@ -27,10 +27,43 @@
 ```
 # DeepFake Detection Model
 
-This project implements a deep learning model for detecting deepfake images using a Xception-based architecture.
+This project uses two distinct datasets of faces consisting of deepfaked images and unaltered images which are given the labels REAL (if unaltered) and FAKE (if manipulated). We are using Kaggle's deepfake_faces dataset (https://www.kaggle.com/datasets/dagnelies/deepfake-faces) as well as finetuning the Xception model for deepfake classification. We trained the model using tensorflow, keras and other ML libraries and trained the model using the A100 GPU accelerator, which significantly sped up the training process. We also evaluated the model on benchmarks such as accuracy, precision, recall, F1-score, and AUC and it passed all the tests. The final trained model's file is 87MB and we cannot upload it here as it is too big for Git. But if you finish training the model, you can use the notebook script we wrote (Model_test.ipynb) to test out the model with your own custom data images. 
+
+Here are some specs for the model:
+- Model Architecture: We used the Xception architecture, which is a convolutional neural network designed for image classification. It leverages depthwise separable convolutions to reduce computational complexity while maintaining high performance.
+
+- Input Size: The model expects input images of size 224x224 pixels with three color channels (RGB).
+
+- Number of Parameters: The model consists of ~22.9 million parameters, making it highly capable of capturing complex patterns in image data.
+
+- Output: The model outputs a single probability value, where:
+
+Values close to 1.0 indicate that the image is likely FAKE.
+Values close to 0.0 indicate that the image is likely REAL.
+Loss Function: We used binary cross-entropy as the loss function, which is common for binary classification tasks.
+
+- Optimizer: The model was trained using the Adam optimizer, with a learning rate of 1e-4, which was fine-tuned to achieve optimal performance.
+
+- Batch Size: We trained the model with a batch size of 32, allowing for efficient utilization of GPU memory while maintaining fast convergence.
+
+- Data Augmentation: We applied various data augmentation techniques such as random rotation, flipping, and zooming to increase the diversity of the training data and improve model generalization.
+
+- Training Duration: The model was trained for 10 epochs on an A100 GPU, which reduced training time significantly compared to CPUs or lower-end GPUs.
+
+- Evaluation Metrics: We evaluated the model using standard metrics for binary classification:
+
+   - Accuracy: The percentage of correct predictions (REAL or FAKE) on the test set.
+   - Precision: How many of the predicted FAKE images were actually FAKE.
+   - Recall: How many of the actual FAKE images were correctly identified.
+   - F1-Score: The harmonic mean of precision and recall.
+   - Performance: On the evaluation dataset, the model achieved:
+      - Accuracy: ~95%
+      - Precision: ~94%
+      - Recall: ~96%
+      - F1-Score: ~95%
 
 ## Setup and Installation (for local setup)
-For Colab see below
+Note: For Colab, see below this local setup section
 
 1. Clone the repository:
    ```
@@ -54,6 +87,7 @@ For Colab see below
 ```%cd Facetell/```
 ```!pip install -r requirements.txt```
 ```!python main.py --mode train --config config.yaml```
+```%run src/evaluate.py #if you wanna evaluate the model's performance```
 
 ## Data Preparation
 
