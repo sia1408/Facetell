@@ -29,7 +29,8 @@
 
 This project implements a deep learning model for detecting deepfake images using a Xception-based architecture.
 
-## Setup and Installation
+## Setup and Installation (for local setup)
+For Colab see below
 
 1. Clone the repository:
    ```
@@ -48,9 +49,15 @@ This project implements a deep learning model for detecting deepfake images usin
    pip install -r requirements.txt
    ```
 
+## Setup for Colab
+```git clone https://github.com/sia1408/Facetell.git```
+```%cd Facetell/```
+```!pip install -r requirements.txt```
+```!python main.py --mode train --config config.yaml```
+
 ## Data Preparation
 
-1. Place your dataset in the `data/` directory:
+1. Place your dataset in the `data/` directory (if you have any special data, otherwise stick to data ive uploaded)
    - Put face images (.jpg) in `data/faces_224/`
    - Ensure `data/metadata.csv` is present with correct labels
 
